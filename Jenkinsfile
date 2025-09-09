@@ -79,7 +79,16 @@ pipeline {
                             kubectl apply -f mongodb-deployment.yaml
                             # Wait for MongoDB to be ready
                             echo "⏳ Waiting for MongoDB to be ready..."
-                            kubectl wait --for=condition=available --timeout=300s deployment/mongodb
+                            # Check deployment status before waiting
+                            kubectl get deployment mongodb
+                            kubectl get pods -l app=mongodb
+                            kubectl wait --for=condition=available --timeout=600s deployment/mongodb || {
+                                echo "❌ MongoDB deployment failed - checking logs..."
+                                kubectl describe deployment mongodb
+                                kubectl get pods -l app=mongodb
+                                kubectl logs -l app=mongodb --tail=50
+                                exit 1
+                            }
                             # Update application image and deploy
                             kubectl apply -f app-deployment.yaml
                             kubectl set image deployment/logistics-tracker-app \\
