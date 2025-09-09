@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: logistics-tracker-app
+  name: logistics-tracker
   labels:
     app: logistics-tracker
 spec:
