@@ -18,6 +18,9 @@ jobs:
 
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      - name: Set lowercase repo name
+        run: echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}/final-capsule" >> $GITHUB_ENV
 
       - name: Build Image
         run: |
@@ -28,4 +31,3 @@ jobs:
         run: |
           docker push ghcr.io/${{ github.repository }}/final-capsule:latest
           docker push ghcr.io/${{ github.repository }}/final-capsule:${{ github.sha }}
-          
